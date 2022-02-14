@@ -33,6 +33,7 @@ const left = 'L';
 const right = 'R';
 const quit = 'QUIT';
 const restart = 'RESTART';
+let userName = '';
 
 //create Field Class for generating field
 class Field {
@@ -92,7 +93,7 @@ class Field {
   }
 
   askQuestion() {
-    const answer = prompt(`Which way? `).toUpperCase();
+    const answer = prompt(`Which way should Pinky go? `).toUpperCase();
     //implement your codes
     this.validateInput(answer);
     this.updatePlayerCoordinates(answer);
@@ -150,7 +151,7 @@ class Field {
 
   //method for Game Over
   gameOver(){
-    const quitOrRestart = prompt(`Would you like to restart or quit?`).toUpperCase();
+    const quitOrRestart = prompt(`Would you like to restart or quit? `).toUpperCase();
     const validInput = ["QUIT", "RESTART"];
     //input validation
     if(!validInput.includes(quitOrRestart)){
@@ -168,7 +169,7 @@ class Field {
   //method to access field array and determine if player can occupy field new position or end game or win the game
   movePlayer() {
     if (this.locationY < 0 || this.locationX < 0){
-      console.log("Oh dear, why did you leave the field? Out of bounds - Game End!");
+      console.log(`Oh dear ${userName}, why did you leave the field? Out of bounds - Game End!`);
       this.gameOver();
     } else if (
       this.field[this.locationY][this.locationX] == fieldCharacter ||
@@ -176,17 +177,31 @@ class Field {
     ) {
       this.field[this.locationY][this.locationX] = pathCharacter;
     } else if (this.field[this.locationY][this.locationX] == hole) {
-      console.log("Oh no! You fell into the hole. Game Over.");
+      console.log(`Oh no, ${userName}! Pinky fell into the hole. Game Over.`);
       this.gameOver();
     } else if (this.field[this.locationY][this.locationX] == hat) {
       console.log(
-        "Hooray! You found the hat. That must be hard work. Bravo!"
+        `Hooray! Pink found the hat. That must be hard work. Bravo ${userName}!`
       );
       this.gameOver();
     }
   }
 
+  //method to obtain user name
+  start () {
+    userName = prompt(`Hi, how would you like me to call you? `);
+    console.log(``);
+    console.log(`Very well. ${userName}, Pinky the mouse has lost her hat in the corn field for the umpteenth timeand we need your help.`);
+    console.log(`Due to the bad weather these days, the field is filled with waterholes ->[0].`)
+    console.log(`Pinky is not a very good swimmer, so she has to avoid the holes.`)
+    console.log(`To find the hat -> [^], you will need to press the buttons: UP (U key), DOWN (D key), LEFT (L key), RIGHT (R key) to guide Pinky.`)
+    console.log(`You may type 'Quit' or 'Restart' to quit or restart the game anytime.`)
+    console.log(`So... ${userName}, Good luck!`)
+    const continueGame = prompt(`Enter any key to continue...`);
+    this.runGame();
+  }
+
 } // End of Class
 
 const myfield = new Field();
-myfield.runGame();
+myfield.start();
