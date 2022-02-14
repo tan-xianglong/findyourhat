@@ -4,13 +4,13 @@
 2. randomize hat location within the 10 x 10 and access the field array to reassign symbol to "^"
 3. set character position to [0][0] and access field array to reassign symbol to "*" --> may consider randomize character position once MVP is done
 4. tracking character movement:
-  a. assign input values of up down left right with + or - 1
+  a. assign input values of up down left right with + 1 or - 1
   b. update the locationX and locationY values per user input
   c. conduct input validation with error msg shown if input is not part of the validation array.
   d. based on the location X and Y, access the field array to see what is the value
     i) if value is ^, show win msg
     ii) if value is 0, show lose msg
-    iii) if location X and Y value is negative value or more than 9, show lose msg and end game.
+    iii) if location X and Y value is negative value or more than 9, show out of bound msg and end game.
     iv) if value is ░ then update value to be *
 
 5. may want to offer option to reset game and generate new field --> after mvp is done
@@ -67,7 +67,7 @@ class Field {
     // while (hatLocationX == 0 && hatLocationY == 0) {
       //   hatLocationX = Math.floor(Math.random() * col);
       //   hatLocationY = Math.floor(Math.random() * row);
-      // }
+      // } // comment out this as character will not be starting at [0][0] all the time
       this.field[hatLocationY][hatLocationX] = hat;
       
       //Set Character position by randomize character location X and Y but to check if it is hat or hole first. use while loop
@@ -103,6 +103,7 @@ class Field {
   askQuestion() {
     const answer = prompt(`Which way should Pinky go? `).toUpperCase();
     //implement your codes
+    // call various methods as the game progress
     this.validateInput(answer);
     this.updatePlayerCoordinates(answer);
     this.movePlayer();
@@ -176,6 +177,7 @@ class Field {
 
   //method to access field array and determine if player can occupy field new position or end game or win the game
   movePlayer() {
+    //check if player is out of bound by checking if location value is below 0 or more than field width or length
     if (
       this.locationY < 0 ||
       this.locationX < 0 ||
@@ -187,14 +189,15 @@ class Field {
       );
       this.gameOver();
     } else if (
+      //check if path is clear to move player along
       this.field[this.locationY][this.locationX] == fieldCharacter ||
       this.field[this.locationY][this.locationX] == pathCharacter
     ) {
       this.field[this.locationY][this.locationX] = pathCharacter;
-    } else if (this.field[this.locationY][this.locationX] == hole) {
+    } else if (this.field[this.locationY][this.locationX] == hole) { //check if the next step is a hole
       console.log(`Oh no, ${userName}! Pinky fell into the hole. Game Over.`);
       this.gameOver();
-    } else if (this.field[this.locationY][this.locationX] == hat) {
+    } else if (this.field[this.locationY][this.locationX] == hat) { //check if the next step is a hat
       console.log(
         `Hooray! Pink found the hat. That must be hard work. Bravo ${userName}!`
       );
@@ -206,6 +209,7 @@ class Field {
   start() {
     userName = prompt(`Hi, how would you like me to call you? `);
     console.log(``);
+    // game explanation
     console.log(
       `Very well. ${userName}, Pinky the mouse has lost her hat in the corn field for the umpteenth timeand we need your help.`
     );
