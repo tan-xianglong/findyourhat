@@ -167,13 +167,21 @@ class Field {
 
   //method to access field array and determine if player can occupy field new position or end game or win the game
   movePlayer() {
-    if (
+    if (this.locationY < 0 || this.locationX < 0){
+      console.log("Oh dear, why did you leave the field? Out of bounds - Game End!");
+      this.gameOver();
+    } else if (
       this.field[this.locationY][this.locationX] == fieldCharacter ||
       this.field[this.locationY][this.locationX] == pathCharacter
     ) {
       this.field[this.locationY][this.locationX] = pathCharacter;
     } else if (this.field[this.locationY][this.locationX] == hole) {
-      console.log("Oh no! You have fallen into the hole. Game Over.")
+      console.log("Oh no! You fell into the hole. Game Over.");
+      this.gameOver();
+    } else if (this.field[this.locationY][this.locationX] == hat) {
+      console.log(
+        "Hooray! You found the hat. That must be hard work. Bravo!"
+      );
       this.gameOver();
     }
   }
