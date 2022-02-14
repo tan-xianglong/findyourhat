@@ -27,13 +27,13 @@ const fieldCharacter = "░";
 const pathCharacter = "*";
 const row = 10;
 const col = 10;
-const up = 'U';
-const down = 'D';
-const left = 'L';
-const right = 'R';
-const quit = 'QUIT';
-const restart = 'RESTART';
-let userName = '';
+const up = "U";
+const down = "D";
+const left = "L";
+const right = "R";
+const quit = "QUIT";
+const restart = "RESTART";
+let userName = "";
 
 //create Field Class for generating field
 class Field {
@@ -41,16 +41,14 @@ class Field {
 
   constructor() {
     //setting starting location of player
-    this.locationX = 0;
-    this.locationY = 0;
-
+    
     for (let a = 0; a < col; a++) {
       this.field[a] = [];
     }
-
+    
     this.generateField(row, col, 0.2);
   }
-
+  
   generateField(height, width, percentage = 0.1) {
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
@@ -63,17 +61,27 @@ class Field {
         }
       }
     }
-    // Set the "hat" location and hat must not be at [0] [0] due to starting character position. use while loop
+    // Set the "hat" location
     const hatLocationX = Math.floor(Math.random() * col);
     const hatLocationY = Math.floor(Math.random() * row);
-    while (hatLocationX == 0 && hatLocationY == 0) {
-      hatLocationX = Math.floor(Math.random() * col);
-      hatLocationY = Math.floor(Math.random() * row);
+    // while (hatLocationX == 0 && hatLocationY == 0) {
+      //   hatLocationX = Math.floor(Math.random() * col);
+      //   hatLocationY = Math.floor(Math.random() * row);
+      // }
+      this.field[hatLocationY][hatLocationX] = hat;
+      
+      //Set Character position by randomize character location X and Y but to check if it is hat or hole first. use while loop
+      this.locationX = Math.floor(Math.random() * col);
+      this.locationY = Math.floor(Math.random() * row);
+    while (
+      this.field[this.locationY][this.locationX] == hole ||
+      this.field[this.locationY][this.locationX] == hat
+    ) {
+      this.locationX = Math.floor(Math.random() * col);
+      this.locationY = Math.floor(Math.random() * row);
     }
-    this.field[hatLocationY][hatLocationX] = hat;
 
-    //Set Character position as [0][0] --> may randomize character location but to check if it is hat or hole first. to do so after MVP is done.
-    this.field[0][0] = pathCharacter;
+    this.field[this.locationY][this.locationX] = pathCharacter;
   }
 
   runGame() {
@@ -102,19 +110,19 @@ class Field {
   }
 
   //method to validate input
-  validateInput(answer){
-    const validInput = ['U', 'D', 'L', 'R', 'QUIT', 'RESTART'];
-    if (!validInput.includes(answer)){
+  validateInput(answer) {
+    const validInput = ["U", "D", "L", "R", "QUIT", "RESTART"];
+    if (!validInput.includes(answer)) {
       this.print();
-      console.log(`Please kindly input U, D, L, R, Quit or Restart.`)
+      console.log(`Please kindly input U, D, L, R, Quit or Restart.`);
       this.askQuestion();
       return;
     }
   }
 
   //method to take input and translate it into player movement and update player coordinates
-  updatePlayerCoordinates(answer){
-    switch(answer){
+  updatePlayerCoordinates(answer) {
+    switch (answer) {
       case up:
         this.locationY -= 1;
         break;
@@ -135,30 +143,30 @@ class Field {
   }
 
   //method to restart game
-  restartGame(){
+  restartGame() {
     this.generateField(row, col, 0.2);
-    this.locationX = 0;
-    this.locationY = 0;
     this.runGame();
     return;
   }
 
   //method to exit game
-  quitGame(){
+  quitGame() {
     console.log("Thank you, have a nice day. Good bye");
     return process.exit();
   }
 
   //method for Game Over
-  gameOver(){
-    const quitOrRestart = prompt(`Would you like to restart or quit? `).toUpperCase();
+  gameOver() {
+    const quitOrRestart = prompt(
+      `Would you like to restart or quit? `
+    ).toUpperCase();
     const validInput = ["QUIT", "RESTART"];
     //input validation
-    if(!validInput.includes(quitOrRestart)){
+    if (!validInput.includes(quitOrRestart)) {
       this.print();
       console.log(`Game has ended, please kindly input Quit or Restart.`);
       this.gameOver();
-    } else if (quitOrRestart == quit){
+    } else if (quitOrRestart == quit) {
       // player to choose to restart or exit game
       this.quitGame();
     } else if (quitOrRestart == restart) {
@@ -168,8 +176,15 @@ class Field {
 
   //method to access field array and determine if player can occupy field new position or end game or win the game
   movePlayer() {
-    if (this.locationY < 0 || this.locationX < 0){
-      console.log(`Oh dear ${userName}, why did you leave the field? Out of bounds - Game End!`);
+    if (
+      this.locationY < 0 ||
+      this.locationX < 0 ||
+      this.locationY > (row - 1) ||
+      this.locationX > (col - 1)
+    ) {
+      console.log(
+        `Oh dear ${userName}, why did you leave the field? Out of bounds - Game End!`
+      );
       this.gameOver();
     } else if (
       this.field[this.locationY][this.locationX] == fieldCharacter ||
@@ -188,19 +203,28 @@ class Field {
   }
 
   //method to obtain user name
-  start () {
+  start() {
     userName = prompt(`Hi, how would you like me to call you? `);
     console.log(``);
-    console.log(`Very well. ${userName}, Pinky the mouse has lost her hat in the corn field for the umpteenth timeand we need your help.`);
-    console.log(`Due to the bad weather these days, the field is filled with waterholes ->[0].`)
-    console.log(`Pinky is not a very good swimmer, so she has to avoid the holes.`)
-    console.log(`To find the hat -> [^], you will need to press the buttons: UP (U key), DOWN (D key), LEFT (L key), RIGHT (R key) to guide Pinky.`)
-    console.log(`You may type 'Quit' or 'Restart' to quit or restart the game anytime.`)
-    console.log(`So... ${userName}, Good luck!`)
+    console.log(
+      `Very well. ${userName}, Pinky the mouse has lost her hat in the corn field for the umpteenth timeand we need your help.`
+    );
+    console.log(
+      `Due to the bad weather these days, the field is filled with waterholes ->[0].`
+    );
+    console.log(
+      `Pinky is not a very good swimmer, so she has to avoid the holes.`
+    );
+    console.log(
+      `To find the hat -> [^], you will need to press the buttons: UP (U key), DOWN (D key), LEFT (L key), RIGHT (R key) to guide Pinky.`
+    );
+    console.log(
+      `You may type 'Quit' or 'Restart' to quit or restart the game anytime.`
+    );
+    console.log(`So... ${userName}, Good luck!`);
     const continueGame = prompt(`Enter any key to continue...`);
     this.runGame();
   }
-
 } // End of Class
 
 const myfield = new Field();
