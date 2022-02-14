@@ -27,7 +27,6 @@ const pathCharacter = "*";
 const row = 10;
 const col = 10;
 
-
 //create Field Class for generating field
 class Field {
   field = [];
@@ -48,14 +47,25 @@ class Field {
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const prob = Math.random();
-        if(prob > percentage) {
+        //using probability to determine if hole should be generated. if random prob exceed the percentage value set, assign a hole
+        if (prob > percentage) {
           this.field[y][x] = fieldCharacter;
+        } else {
+          this.field[y][x] = hole;
         }
       }
     }
-    // Set the "hat" location
+    // Set the "hat" location and hat must not be at [0] [0] due to starting character position. use while loop
+    const hatLocationX = Math.floor(Math.random() * col);
+    const hatLocationY = Math.floor(Math.random() * row);
+    while (hatLocationX == 0 && hatLocationY == 0) {
+      hatLocationX = Math.floor(Math.random() * col);
+      hatLocationY = Math.floor(Math.random() * row);
+    }
+    this.field[hatLocationY][hatLocationX] = hat;
 
-    //Set Character position as [0][0]
+    //Set Character position as [0][0] --> may randomize character location but to check if it is hat or hole first. to do so after MVP is done.
+    this.field[0][0] = pathCharacter;
   }
 
   runGame() {
@@ -77,7 +87,12 @@ class Field {
   askQuestion() {
     const answer = prompt(`Which way? `).toUpperCase();
     //implement your codes
+
+    this.runGame();
   }
+
+  
+
 } // End of Class
 
 const myfield = new Field();
